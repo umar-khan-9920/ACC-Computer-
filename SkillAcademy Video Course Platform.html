@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillAcademy - Practical Video Courses</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(5px);
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
+        }
+        .animate-pulse-dot {
+            animation: pulse-dot 1.8s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2.5 pointer-events-none max-w-[92vw] sm:max-w-sm"></div>
+
+    <!-- ==================== TOP NAVBAR ==================== -->
+    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Brand Logo -->
+                <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('home')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-700 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                        <i class="fa-solid fa-graduation-cap text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900">SkillAcademy</span>
+                            <span id="cloud-status-pill" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse-dot"></span>
+                                <span id="cloud-status-text">Syncing...</span>
+                            </span>
+                        </div>
+                        <p class="hidden sm:block text-[11px] text-slate-400 font-medium -mt-0.5">Learn Practical Digital Skills</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button onclick="openAccessModal()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-all shadow-xs">
+                        <i class="fa-solid fa-circle-play text-indigo-600"></i>
+                        <span class="hidden md:inline">Already Enrolled?</span>
+                        <span>Check Access</span>
+                    </button>
+
+                    <button onclick="handleAdminNavClick()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all">
+                        <i class="fa-solid fa-shield-halved text-slate-600"></i>
+                        <span id="nav-admin-label" class="hidden sm:inline">Admin Panel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== MAIN APPLICATION BODY ==================== -->
+    <main class="flex-grow">
+
+        <!-- ==================== VIEW 1: PUBLIC COURSE CATALOG ==================== -->
+        <div id="view-home" class="block">
+            <!-- Hero Section -->
+            <section class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white py-12 sm:py-16 px-4 relative overflow-hidden">
+                <div class="max-w-5xl mx-auto text-center relative z-10">
+                    <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-xs font-semibold tracking-wide mb-4">
+                        <i class="fa-solid fa-bolt text-amber-400"></i> Step-by-Step HD Video Training
+                    </span>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+                        Naye Skills Seekhein, Apna Future Banayein
+                    </h1>
+                    <p class="text-slate-300 max-w-2xl mx-auto text-sm sm:text-lg mb-8 leading-relaxed">
+                        Apna manpasand course chunein aur enrollment form bharein. Admin approval milte hi aapke Email ID par turant full HD video classes unlock ho jayengi.
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                        <a href="#catalog-grid-section" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-900/50 transition-all inline-flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group"></i> Browse Courses
+                        </a>
+                        <button onclick="openAccessModal()" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-sm transition-all inline-flex items-center gap-2">
+                            <i class="fa-solid fa-unlock-keyhole text-emerald-400"></i> Watch Unlocked Videos
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Course Catalog Grid -->
+            <section id="catalog-grid-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Available Video Courses</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm mt-1">Kisi bhi course card par click karke enrollment form bharein</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <div class="relative flex-grow sm:w-72">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="text" id="search-courses-input" oninput="renderCourseGrid()" placeholder="Search course title..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xs">
+                        </div>
+                        <button onclick="syncFromGoogleSheet(true)" title="Refresh Live Courses" class="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition-all shadow-xs">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Skeleton / Cards Grid -->
+                <div id="course-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+                    <!-- Dynamic Course Cards Rendered Here -->
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== VIEW 2: NO-CODE ADMIN PANEL ==================== -->
+        <div id="view-admin" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <!-- Admin Header Banner -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 mb-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-xs font-bold uppercase">Admin Mode</span>
+                        <span class="px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-xs font-semibold">Live Google Sheet Synced</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1.5">No-Code Course & Student Manager</h1>
+                </div>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <button onclick="syncFromGoogleSheet(true)" class="px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-rotate"></i> Sync Sheet
+                    </button>
+                    <button onclick="switchView('home')" class="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-arrow-left"></i> Website
+                    </button>
+                    <button onclick="lockAdminPanel()" class="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-lock"></i> Lock
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-3 gap-3 sm:gap-5 mb-6">
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
+                    <p class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase">Total Courses</p>
+                    <p id="stat-courses" class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-1">0</p>
+                </div>
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
+                    <p class="text-[11px] sm:text-xs font-bold text-amber-600 uppercase">Pending Requests</p>
+                    <p id="stat-pending" class="text-xl sm:text-3xl font-extrabold text-amber-600 mt-1">0</p>
+                </div>
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
+                    <p class="text-[11px] sm:text-xs font-bold text-emerald-600 uppercase">Approved Students</p>
+                    <p id="stat-approved" class="text-xl sm:text-3xl font-extrabold text-emerald-600 mt-1">0</p>
+                </div>
+            </div>
+
+            <!-- Admin Tabs Navigation -->
+            <div class="flex overflow-x-auto gap-2 pb-3 mb-6 border-b border-slate-200">
+                <button onclick="switchAdminTab('permissions')" id="tab-btn-permissions" class="admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 text-white shadow-xs inline-flex items-center gap-2">
+                    <i class="fa-solid fa-user-check"></i> 1. Student Permissions & Requests
+                </button>
+                <button onclick="switchAdminTab('courses')" id="tab-btn-courses" class="admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 inline-flex items-center gap-2">
+                    <i class="fa-solid fa-video"></i> 2. Manage Courses (Add / Edit / Delete)
+                </button>
+                <button onclick="switchAdminTab('settings')" id="tab-btn-settings" class="admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 inline-flex items-center gap-2">
+                    <i class="fa-solid fa-gear"></i> 3. Cloud & Password Settings
+                </button>
+            </div>
+
+            <!-- ==================== ADMIN TAB 1: STUDENT PERMISSIONS ==================== -->
+            <div id="admin-tab-permissions" class="admin-tab-pane space-y-6">
+                <!-- Direct Grant Access Box -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs">
+                    <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-key text-indigo-600"></i> Direct Grant Access (Instant Email Unlock)
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5 mb-4">Kisi bhi student ka Email ID aur Course select karke seedha permission dein — bina form bhare unka course unlock ho jayega.</p>
+                    <form onsubmit="handleDirectGrant(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <input type="email" id="direct-grant-email" required placeholder="Enter Student Email ID *" class="px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <select id="direct-grant-course" required class="px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                            <!-- Populated dynamically -->
+                        </select>
+                        <button type="submit" id="direct-grant-btn" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i> Grant Permission
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Student Enrollment Requests List -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                    <div class="p-5 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h3 class="text-base sm:text-lg font-extrabold text-slate-900">Student Enrollment Requests</h3>
+                            <p class="text-xs text-slate-500">Approve karne par student apne Email ID se course video dekh sakta hai.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="filter-enrollment-status" onchange="renderEnrollmentsList()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50 text-slate-700 focus:outline-none">
+                                <option value="all">All Requests</option>
+                                <option value="pending">Pending Only</option>
+                                <option value="approved">Approved Only</option>
+                                <option value="revoked">Revoked Only</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
+                                    <th class="py-3.5 px-4">Student Details</th>
+                                    <th class="py-3.5 px-4">Mobile & Address</th>
+                                    <th class="py-3.5 px-4">Age / Gender</th>
+                                    <th class="py-3.5 px-4">Course</th>
+                                    <th class="py-3.5 px-4">Status</th>
+                                    <th class="py-3.5 px-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-enrollments-tbody" class="divide-y divide-slate-200 text-sm">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN TAB 2: MANAGE COURSES (NO-CODE CRUD) ==================== -->
+            <div id="admin-tab-courses" class="admin-tab-pane hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-base sm:text-lg font-extrabold text-slate-900">Manage Your Video Courses</h3>
+                        <p class="text-xs text-slate-500">Naya course add karein, ya kisi bhi course ka Title, Price, Description aur Video URL edit/delete karein.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2.5">
+                        <button onclick="pushSampleCoursesToCloud()" id="push-samples-btn" class="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Add 3 Sample Courses
+                        </button>
+                        <button onclick="openCourseFormModal()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-xs inline-flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-plus"></i> Add New Course
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Courses Grid -->
+                <div id="admin-courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic Admin Course Cards -->
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN TAB 3: CLOUD & PASSWORD SETTINGS ==================== -->
+            <div id="admin-tab-settings" class="admin-tab-pane hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Card 1: Connected Google Sheets Cloud URL -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-xs font-bold">CONNECTED TO GOOGLE SHEETS</span>
+                            <button onclick="syncFromGoogleSheet(true)" class="text-xs font-bold text-indigo-600 hover:underline inline-flex items-center gap-1">
+                                <i class="fa-solid fa-rotate"></i> Force Refresh
+                            </button>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-slate-900">Google Sheets Cloud Database URL</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Aapka Google Apps Script Web App URL pehle se is website mein permanently connected hai. Saara course data aur student enrollments isi URL par live sync hota hai.
+                        </p>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Active Web App URL</label>
+                            <input type="url" id="settings-script-url" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-mono text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+
+                        <div class="flex flex-wrap gap-2.5">
+                            <button onclick="updateScriptUrl()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-xs inline-flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk"></i> Save & Sync URL
+                            </button>
+                            <button onclick="resetToDefaultScriptUrl()" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs sm:text-sm font-bold">
+                                Restore Default URL
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Change Admin PIN (Syncs to Google Sheet Settings Tab) -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+                        <div>
+                            <span class="px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-bold">SECURITY SETTINGS</span>
+                            <h3 class="text-lg font-extrabold text-slate-900 mt-1.5">Change Admin Password (PIN)</h3>
+                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                                Yahan se aap bina code touch kiye Admin Panel ka PIN badal sakte hain. Naya PIN seedha aapki Google Sheet ke <strong>Settings</strong> tab mein save ho jayega.
+                            </p>
+                        </div>
+
+                        <form onsubmit="handleChangeAdminPin(event)" class="space-y-4 pt-1">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">New Admin PIN / Password *</label>
+                                <input type="text" id="new-admin-pin-input" required minlength="4" maxlength="16" placeholder="e.g. 7860 or Admin2026" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-bold tracking-wider focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            </div>
+                            <button type="submit" id="update-pin-btn" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-xs inline-flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved"></i> Update PIN in Cloud
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <p class="font-medium">&copy; 2026 SkillAcademy Video Courses. All rights reserved.</p>
+            <button onclick="openAccessModal()" class="text-indigo-600 font-bold hover:underline">
+                Already Enrolled? Check Course Access &rarr;
+            </button>
+        </div>
+    </footer>
+
+    <!-- ==================== MODAL 1: STUDENT ENROLLMENT FORM ==================== -->
+    <div id="modal-enroll" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden my-6">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-indigo-600 to-violet-700 px-6 py-4 text-white flex items-center justify-between">
+                <div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-200">Course Enrollment Form</span>
+                    <h3 id="enroll-modal-title" class="text-lg font-extrabold leading-snug mt-0.5">Course Name</h3>
+                </div>
+                <button onclick="closeModal('modal-enroll')" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Price Strip -->
+            <div class="bg-indigo-50/80 px-6 py-3 border-b border-indigo-100 flex items-center justify-between">
+                <span class="text-xs font-semibold text-indigo-900">Course Fee (Lifetime Video Access):</span>
+                <span id="enroll-modal-price" class="text-base font-extrabold text-indigo-700">₹499</span>
+            </div>
+
+            <!-- Enrollment Form -->
+            <form id="student-enroll-form" onsubmit="handleStudentEnrollment(event)" class="p-5 sm:p-6 space-y-4">
+                <input type="hidden" id="enroll-course-id">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
+                    <input type="text" id="enroll-name" required placeholder="Apna poora naam likhein" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Number *</label>
+                        <input type="tel" id="enroll-mobile" required pattern="[0-9]{10}" title="10 digit mobile number likhein" placeholder="10-digit mobile no." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email ID *</label>
+                        <input type="email" id="enroll-email" required placeholder="you@gmail.com" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Age *</label>
+                        <input type="number" id="enroll-age" required min="10" max="99" placeholder="e.g. 21" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Gender *</label>
+                        <select id="enroll-gender" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Address *</label>
+                    <textarea id="enroll-address" required rows="2" placeholder="Village/City, District, State, Pincode" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none"></textarea>
+                </div>
+
+                <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <button type="button" onclick="switchFromEnrollToAccess()" class="text-xs font-bold text-indigo-600 hover:underline text-left">
+                        Already Approved? Watch Now &rarr;
+                    </button>
+                    <button type="submit" id="enroll-submit-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-200 transition-all inline-flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Submit Enrollment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: CHECK ACCESS BY EMAIL ==================== -->
+    <div id="modal-access" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden my-6">
+            <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+                <h3 class="font-extrabold text-base flex items-center gap-2">
+                    <i class="fa-solid fa-unlock-keyhole text-emerald-400"></i> Check Course Access
+                </h3>
+                <button onclick="closeModal('modal-access')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Apna registered <strong>Email ID</strong> enter karein. Admin ne jin-jin courses ko approve kiya hai, wo sabhi neeche unlock ho jayenge.
+                </p>
+
+                <form onsubmit="handleVerifyStudentEmail(event)" class="flex gap-2">
+                    <input type="email" id="access-email-input" required placeholder="student@gmail.com" class="flex-grow px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <button type="submit" id="verify-email-btn" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xs whitespace-nowrap">
+                        Check
+                    </button>
+                </form>
+
+                <!-- Results Container -->
+                <div id="access-results-area" class="hidden space-y-3 pt-2 border-t border-slate-100">
+                    <!-- Dynamic unlocked/pending courses list -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 3: HD VIDEO PLAYER ==================== -->
+    <div id="modal-player" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-5 modal-backdrop overflow-y-auto">
+        <div class="bg-slate-950 text-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-800 overflow-hidden my-4">
+            <!-- Top Bar -->
+            <div class="px-5 py-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase">
+                            <i class="fa-solid fa-circle-check mr-1"></i> Approved Access
+                        </span>
+                        <span id="player-email-badge" class="text-xs text-slate-400 truncate"></span>
+                    </div>
+                    <h3 id="player-title" class="text-base sm:text-lg font-extrabold text-white truncate mt-1">Course Title</h3>
+                </div>
+                <button onclick="closeVideoPlayer()" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Responsive Video Container -->
+            <div id="video-wrapper" class="relative w-full aspect-video bg-black">
+                <!-- Iframe or HTML5 Video injected dynamically -->
+            </div>
+
+            <!-- Course Description Footer -->
+            <div class="p-5 bg-slate-900 border-t border-slate-800">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-1">About This Course</h4>
+                <p id="player-description" class="text-xs sm:text-sm text-slate-300 leading-relaxed"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 4: ADMIN LOGIN PIN ==================== -->
+    <div id="modal-admin-login" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+                <h3 class="font-extrabold text-base flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-amber-400"></i> Admin Login
+                </h3>
+                <button onclick="closeModal('modal-admin-login')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="handleAdminLogin(event)" class="p-6 space-y-4">
+                <div class="text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-2.5 text-xl">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <p class="text-sm font-bold text-slate-800">Enter Admin PIN</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Default PIN is <span class="font-mono font-bold text-indigo-600">1234</span> (unless changed in Settings)</p>
+                </div>
+                <input type="password" id="admin-pin-field" required placeholder="••••" class="w-full text-center tracking-[0.4em] font-extrabold text-lg px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <button type="submit" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition-all">
+                    Unlock Admin Panel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 5: ADD / EDIT COURSE FORM ==================== -->
+    <div id="modal-course-form" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden my-6">
+            <div class="px-6 py-4 bg-indigo-600 text-white flex items-center justify-between">
+                <h3 id="course-form-modal-title" class="font-extrabold text-base">Add New Video Course</h3>
+                <button onclick="closeModal('modal-course-form')" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleSaveCourse(event)" class="p-5 sm:p-6 space-y-4">
+                <input type="hidden" id="course-form-id">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Course Title *</label>
+                    <input type="text" id="course-form-title" required placeholder="e.g. Complete Graphic Design Course" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Course Price (₹ INR) *</label>
+                    <input type="number" id="course-form-price" required min="0" placeholder="e.g. 499" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Course Description *</label>
+                    <textarea id="course-form-desc" required rows="3" placeholder="Is course mein students kya-kya seekhenge..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Video URL (YouTube / Google Drive / MP4) *</label>
+                    <input type="url" id="course-form-video" required placeholder="https://www.youtube.com/watch?v=... or Drive link" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <p class="text-[11px] text-slate-400 mt-1">YouTube watch/short links, Google Drive share links, aur direct .mp4 links automatically supported hain.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Thumbnail Image URL (Optional)</label>
+                    <input type="url" id="course-form-thumb" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2.5">
+                    <button type="button" onclick="closeModal('modal-course-form')" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs sm:text-sm font-bold hover:bg-slate-50">
+                        Cancel
+                    </button>
+                    <button type="submit" id="course-form-save-btn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-md">
+                        Save Course
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT CLOUD & APP ENGINE ==================== -->
+    <script>
+        // 1. HARDCODED GOOGLE APPS SCRIPT CLOUD DATABASE URL
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfQqyud6dl6Bft6ZFAOsslYk9R3XIgt8_6IwsF4fwGzrG0vGMYEkC8X1hCYMXC2fvo/exec";
+
+        // Fallback Sample Courses (Displayed only if Google Sheet is completely empty on first load)
+        const SAMPLE_COURSES = [
+            {
+                id: "CRS-101",
+                title: "Complete Digital Marketing Masterclass",
+                price: 499,
+                description: "Facebook Ads, Instagram Growth, Google SEO aur Freelancing se ghar baithe earning karna seekhein step-by-step practical classes mein.",
+                videoUrl: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
+                thumbnail: "https://placehold.co/640x360/1e1b4b/e0e7ff?text=Digital+Marketing+Course"
+            },
+            {
+                id: "CRS-102",
+                title: "Graphic Design & CorelDraw Zero to Pro",
+                price: 699,
+                description: "Logo design, wedding cards, social media posters, flex banners aur professional print design banana seekhein bilkul basic se.",
+                videoUrl: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+                thumbnail: "https://placehold.co/640x360/064e3b/d1fae5?text=Graphic+Design+Mastery"
+            },
+            {
+                id: "CRS-103",
+                title: "Spoken English & Confidence Building",
+                price: 399,
+                description: "Daily English conversation, grammar fluency, public speaking aur job interview clear karne ka complete practical video course.",
+                videoUrl: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
+                thumbnail: "https://placehold.co/640x360/312e81/c7d2fe?text=Spoken+English+Fluency"
+            }
+        ];
+
+        // Global App State
+        let SCRIPT_URL = localStorage.getItem("skillacademy_script_url") || DEFAULT_SCRIPT_URL;
+        let courses = [];
+        let enrollments = [];
+        let adminPin = "1234";
+        let isAdminUnlocked = false;
+        let isUsingFallbackSamples = false;
+
+        // ==================== INITIALIZATION ====================
+        window.onload = async function () {
+            // Load cached state immediately for instant paint
+            const cachedCourses = localStorage.getItem("skillacademy_courses");
+            const cachedEnrollments = localStorage.getItem("skillacademy_enrollments");
+            const cachedPin = localStorage.getItem("skillacademy_pin");
+
+            if (cachedCourses) courses = JSON.parse(cachedCourses);
+            if (cachedEnrollments) enrollments = JSON.parse(cachedEnrollments);
+            if (cachedPin) adminPin = cachedPin;
+
+            if (courses.length === 0) {
+                courses = [...SAMPLE_COURSES];
+                isUsingFallbackSamples = true;
+            }
+
+            renderCourseGrid();
+            populateCourseDropdowns();
+
+            // Automatically sync live data from Google Sheet on page load
+            await syncFromGoogleSheet(false);
+        };
+
+        // ==================== CLOUD SYNC (GET & POST) ====================
+        function setSyncBadge(state) {
+            const pill = document.getElementById("cloud-status-pill");
+            const text = document.getElementById("cloud-status-text");
+            if (!pill || !text) return;
+
+            if (state === "syncing") {
+                pill.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200";
+                pill.querySelector("span").className = "w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse-dot";
+                text.textContent = "Syncing...";
+            } else if (state === "synced") {
+                pill.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200";
+                pill.querySelector("span").className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
+                text.textContent = "Live Synced";
+            } else {
+                pill.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200";
+                pill.querySelector("span").className = "w-1.5 h-1.5 rounded-full bg-rose-500";
+                text.textContent = "Offline Cache";
+            }
+        }
+
+        async function syncFromGoogleSheet(showAlertToast = true) {
+            setSyncBadge("syncing");
+            try {
+                const response = await fetch(SCRIPT_URL, { method: "GET" });
+                const data = await response.json();
+
+                if (data) {
+                    if (Array.isArray(data.courses) && data.courses.length > 0) {
+                        courses = data.courses.map(c => ({
+                            id: String(c.id),
+                            title: String(c.title || "Untitled Course"),
+                            price: Number(c.price) || 0,
+                            description: String(c.description || ""),
+                            videoUrl: String(c.videoUrl || ""),
+                            thumbnail: String(c.thumbnail || "")
+                        }));
+                        isUsingFallbackSamples = false;
+                        localStorage.setItem("skillacademy_courses", JSON.stringify(courses));
+                    } else if (Array.isArray(data.courses) && data.courses.length === 0) {
+                        // Sheet is empty; keep fallback sample courses visible on catalog
+                        if (courses.length === 0) {
+                            courses = [...SAMPLE_COURSES];
+                        }
+                        isUsingFallbackSamples = true;
+                    }
+
+                    if (Array.isArray(data.enrollments)) {
+                        enrollments = data.enrollments.map(e => ({
+                            timestamp: String(e.timestamp || ""),
+                            courseId: String(e.courseId || ""),
+                            courseTitle: String(e.courseTitle || ""),
+                            name: String(e.name || ""),
+                            mobile: String(e.mobile || ""),
+                            address: String(e.address || ""),
+                            email: String(e.email || "").toLowerCase().trim(),
+                            age: String(e.age || ""),
+                            gender: String(e.gender || ""),
+                            status: String(e.status || "pending").toLowerCase().trim()
+                        })).reverse();
+                        localStorage.setItem("skillacademy_enrollments", JSON.stringify(enrollments));
+                    }
+
+                    if (data.adminPin) {
+                        adminPin = String(data.adminPin).trim();
+                        localStorage.setItem("skillacademy_pin", adminPin);
+                    }
+
+                    setSyncBadge("synced");
+                    renderCourseGrid();
+                    populateCourseDropdowns();
+                    if (isAdminUnlocked) refreshAdminUI();
+
+                    if (showAlertToast) {
+                        showToast("Google Sheet se live data sync ho gaya!", "success");
+                    }
+                }
+            } catch (error) {
+                console.error("Sync error:", error);
+                setSyncBadge("offline");
+                if (showAlertToast) {
+                    showToast("Network issue: Cached data dikhaya ja raha hai.", "warning");
+                }
+            }
+        }
+
+        async function postActionToSheet(payload) {
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                });
+                return true;
+            } catch (error) {
+                console.error("POST failed:", error);
+                return false;
+            }
+        }
+
+        // ==================== TOAST NOTIFICATIONS ====================
+        function showToast(message, type = "info") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+
+            const styles = {
+                success: "bg-emerald-600 text-white",
+                error: "bg-rose-600 text-white",
+                warning: "bg-amber-500 text-white",
+                info: "bg-slate-900 text-white"
+            };
+            const icons = {
+                success: "fa-circle-check",
+                error: "fa-circle-exclamation",
+                warning: "fa-triangle-exclamation",
+                info: "fa-circle-info"
+            };
+
+            toast.className = `${styles[type] || styles.info} px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 text-xs sm:text-sm font-semibold pointer-events-auto transition-all duration-300`;
+            toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info} text-base"></i><span>${message}</span>`;
+
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateY(-8px)";
+                setTimeout(() => toast.remove(), 300);
+            }, 3800);
+        }
+
+        // ==================== NAVIGATION & MODALS ====================
+        function switchView(view) {
+            const homeEl = document.getElementById("view-home");
+            const adminEl = document.getElementById("view-admin");
+
+            if (view === "admin") {
+                if (!isAdminUnlocked) {
+                    openModal("modal-admin-login");
+                    return;
+                }
+                homeEl.classList.add("hidden");
+                adminEl.classList.remove("hidden");
+                refreshAdminUI();
+            } else {
+                adminEl.classList.add("hidden");
+                homeEl.classList.remove("hidden");
+                renderCourseGrid();
+            }
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function handleAdminNavClick() {
+            if (isAdminUnlocked) {
+                switchView("admin");
+            } else {
+                document.getElementById("admin-pin-field").value = "";
+                openModal("modal-admin-login");
+            }
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove("hidden");
+            el.classList.add("flex");
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.add("hidden");
+            el.classList.remove("flex");
+        }
+
+        // ==================== COURSE CATALOG RENDERING ====================
+        function renderCourseGrid() {
+            const container = document.getElementById("course-cards-container");
+            const query = (document.getElementById("search-courses-input")?.value || "").toLowerCase().trim();
+
+            const filtered = courses.filter(c =>
+                c.title.toLowerCase().includes(query) ||
+                c.description.toLowerCase().includes(query)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white rounded-2xl border border-slate-200 p-12 text-center">
+                        <i class="fa-solid fa-magnifying-glass text-3xl text-slate-300 mb-3"></i>
+                        <h3 class="text-base font-bold text-slate-800">Koi course nahi mila</h3>
+                        <p class="text-xs text-slate-500 mt-1">Dusra keyword search karein ya Admin Panel se naya course add karein.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(course => {
+                const fallbackThumb = `https://placehold.co/640x360/1e1b4b/e0e7ff?text=${encodeURIComponent(course.title)}`;
+                const thumbSrc = course.thumbnail && course.thumbnail.trim() !== "" ? course.thumbnail : fallbackThumb;
+
+                return `
+                <div onclick="openEnrollmentModal('${course.id}')" class="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col">
+                    <!-- Thumbnail -->
+                    <div class="relative aspect-video bg-slate-100 overflow-hidden">
+                        <img src="${thumbSrc}"
+                             onerror="this.onerror=null;this.src='${fallbackThumb}';"
+                             alt="${course.title}"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-3 left-3">
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-900/80 backdrop-blur-xs text-white text-[11px] font-bold">
+                                <i class="fa-solid fa-video text-indigo-400 mr-1"></i> HD Video Course
+                            </span>
+                        </div>
+                        <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-extrabold text-sm shadow-md">
+                            ₹${course.price}
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-5 sm:p-6 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                                ${course.title}
+                            </h3>
+                            <p class="text-xs sm:text-sm text-slate-500 mt-2 line-clamp-3 leading-relaxed">
+                                ${course.description}
+                            </p>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+                            <span class="text-xs font-semibold text-slate-400">
+                                <i class="fa-solid fa-infinity text-indigo-500 mr-1"></i> Lifetime Access
+                            </span>
+                            <button type="button" class="px-4 py-2 rounded-xl bg-indigo-50 group-hover:bg-indigo-600 text-indigo-700 group-hover:text-white font-bold text-xs transition-all inline-flex items-center gap-1.5">
+                                <span>Enroll Now</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join("");
+        }
+
+        // ==================== STUDENT ENROLLMENT SUBMISSION ====================
+        function openEnrollmentModal(courseId) {
+            const course = courses.find(c => String(c.id) === String(courseId));
+            if (!course) return;
+
+            document.getElementById("enroll-course-id").value = course.id;
+            document.getElementById("enroll-modal-title").textContent = course.title;
+            document.getElementById("enroll-modal-price").textContent = `₹${course.price}`;
+            document.getElementById("student-enroll-form").reset();
+            openModal("modal-enroll");
+        }
+
+        function switchFromEnrollToAccess() {
+            closeModal("modal-enroll");
+            openAccessModal();
+        }
+
+        async function handleStudentEnrollment(e) {
+            e.preventDefault();
+            const btn = document.getElementById("enroll-submit-btn");
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
+
+            const courseId = document.getElementById("enroll-course-id").value;
+            const course = courses.find(c => String(c.id) === String(courseId));
+
+            const payload = {
+                action: "enroll",
+                courseId: course ? course.id : courseId,
+                courseTitle: course ? course.title : "Video Course",
+                name: document.getElementById("enroll-name").value.trim(),
+                mobile: document.getElementById("enroll-mobile").value.trim(),
+                address: document.getElementById("enroll-address").value.trim(),
+                email: document.getElementById("enroll-email").value.trim().toLowerCase(),
+                age: document.getElementById("enroll-age").value.trim(),
+                gender: document.getElementById("enroll-gender").value
+            };
+
+            // Optimistic UI update
+            enrollments.unshift({
+                ...payload,
+                timestamp: new Date().toISOString(),
+                status: "pending"
+            });
+            localStorage.setItem("skillacademy_enrollments", JSON.stringify(enrollments));
+
+            // Send POST request to Google Apps Script
+            await postActionToSheet(payload);
+
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+            closeModal("modal-enroll");
+
+            showToast("Request submitted! Admin approval ke baad aapka video unlock ho jayega.", "success");
+
+            // Background re-sync after 2 seconds to confirm cloud write
+            setTimeout(() => syncFromGoogleSheet(false), 2000);
+        }
+
+        // ==================== STUDENT ACCESS CHECK & VIDEO PLAYER ====================
+        function openAccessModal() {
+            const resultsArea = document.getElementById("access-results-area");
+            resultsArea.classList.add("hidden");
+            resultsArea.innerHTML = "";
+            openModal("modal-access");
+        }
+
+        async function handleVerifyStudentEmail(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById("access-email-input").value.trim().toLowerCase();
+            const btn = document.getElementById("verify-email-btn");
+            const resultsArea = document.getElementById("access-results-area");
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+            resultsArea.classList.remove("hidden");
+            resultsArea.innerHTML = `<p class="text-xs text-slate-500 text-center py-3"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Checking live approvals from Google Sheet...</p>`;
+
+            // Always fetch fresh approval status from Google Sheet
+            await syncFromGoogleSheet(false);
+
+            btn.disabled = false;
+            btn.textContent = "Check";
+
+            const matchingRecords = enrollments.filter(item => item.email === emailInput);
+
+            if (matchingRecords.length === 0) {
+                resultsArea.innerHTML = `
+                    <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+                        <p class="font-bold"><i class="fa-solid fa-circle-xmark mr-1"></i> No Enrollment Found</p>
+                        <p class="mt-1"><strong>${emailInput}</strong> ke naam se koi enrollment nahi mila. Pehle kisi course card par click karke form bharein.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Deduplicate by courseId keeping latest status
+            const latestByCourse = new Map();
+            matchingRecords.forEach(rec => {
+                if (!latestByCourse.has(rec.courseId)) {
+                    latestByCourse.set(rec.courseId, rec);
+                }
+            });
+
+            const cardsHtml = Array.from(latestByCourse.values()).map(rec => {
+                const courseObj = courses.find(c => String(c.id) === String(rec.courseId));
+                const displayTitle = courseObj ? courseObj.title : rec.courseTitle;
+
+                if (rec.status === "approved") {
+                    return `
+                        <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3">
+                            <div class="min-w-0">
+                                <span class="inline-block px-2 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-bold uppercase mb-1">Unlocked</span>
+                                <h4 class="text-xs font-extrabold text-slate-900 truncate">${displayTitle}</h4>
+                            </div>
+                            <button onclick="launchVideoPlayer('${rec.courseId}', '${emailInput}')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs shrink-0 inline-flex items-center gap-1.5">
+                                <i class="fa-solid fa-play"></i> Play Video
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between gap-3">
+                            <div class="min-w-0">
+                                <span class="inline-block px-2 py-0.5 rounded bg-amber-500 text-white text-[10px] font-bold uppercase mb-1">${rec.status}</span>
+                                <h4 class="text-xs font-extrabold text-slate-900 truncate">${displayTitle}</h4>
+                                <p class="text-[11px] text-amber-800 mt-0.5">Admin approval pending hai.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join("");
+
+            resultsArea.innerHTML = cardsHtml;
+        }
+
+        function formatVideoSource(url) {
+            if (!url) return { type: "iframe", src: "https://www.youtube.com/embed/ysz5S6PUM-U" };
+            const cleanUrl = url.trim();
+
+            // Direct MP4 / WebM video file
+            if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(cleanUrl)) {
+                return { type: "video", src: cleanUrl };
+            }
+
+            // YouTube embed already
+            if (cleanUrl.includes("youtube.com/embed/")) {
+                return { type: "iframe", src: cleanUrl };
+            }
+
+            // YouTube watch?v=
+            const watchMatch = cleanUrl.match(/[?&]v=([^&]+)/);
+            if (watchMatch && watchMatch[1]) {
+                return { type: "iframe", src: `https://www.youtube.com/embed/${watchMatch[1]}?autoplay=1` };
+            }
+
+            // YouTube youtu.be/
+            const shortMatch = cleanUrl.match(/youtu\.be\/([^?&]+)/);
+            if (shortMatch && shortMatch[1]) {
+                return { type: "iframe", src: `https://www.youtube.com/embed/${shortMatch[1]}?autoplay=1` };
+            }
+
+            // YouTube Shorts
+            const shortsMatch = cleanUrl.match(/youtube\.com\/shorts\/([^?&]+)/);
+            if (shortsMatch && shortsMatch[1]) {
+                return { type: "iframe", src: `https://www.youtube.com/embed/${shortsMatch[1]}?autoplay=1` };
+            }
+
+            // Google Drive /view or /edit -> /preview
+            if (cleanUrl.includes("drive.google.com")) {
+                const previewUrl = cleanUrl.replace(/\/(view|edit)(\?.*)?$/, "/preview");
+                return { type: "iframe", src: previewUrl };
+            }
+
+            return { type: "iframe", src: cleanUrl };
+        }
+
+        function launchVideoPlayer(courseId, studentEmail) {
+            const course = courses.find(c => String(c.id) === String(courseId));
+            if (!course) {
+                showToast("Course details nahi mili.", "error");
+                return;
+            }
+
+            closeModal("modal-access");
+
+            document.getElementById("player-email-badge").textContent = studentEmail;
+            document.getElementById("player-title").textContent = course.title;
+            document.getElementById("player-description").textContent = course.description;
+
+            const wrapper = document.getElementById("video-wrapper");
+            const media = formatVideoSource(course.videoUrl);
+
+            if (media.type === "video") {
+                wrapper.innerHTML = `<video class="w-full h-full" controls autoplay playsinline controlsList="nodownload"><source src="${media.src}" type="video/mp4">Your browser does not support video playback.</video>`;
+            } else {
+                wrapper.innerHTML = `<iframe class="w-full h-full" src="${media.src}" title="${course.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+            }
+
+            openModal("modal-player");
+        }
+
+        function closeVideoPlayer() {
+            document.getElementById("video-wrapper").innerHTML = "";
+            closeModal("modal-player");
+        }
+
+        // ==================== ADMIN PANEL AUTH & TABS ====================
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const enteredPin = document.getElementById("admin-pin-field").value.trim();
+
+            if (enteredPin === String(adminPin)) {
+                isAdminUnlocked = true;
+                closeModal("modal-admin-login");
+                document.getElementById("nav-admin-label").textContent = "Dashboard";
+                switchView("admin");
+                showToast("Admin Panel unlocked!", "success");
+            } else {
+                showToast("Galat PIN! Kripya sahi Admin PIN dalein.", "error");
+            }
+        }
+
+        function lockAdminPanel() {
+            isAdminUnlocked = false;
+            document.getElementById("nav-admin-label").textContent = "Admin Panel";
+            switchView("home");
+            showToast("Admin Panel locked.", "info");
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll(".admin-tab-pane").forEach(el => el.classList.add("hidden"));
+            document.getElementById(`admin-tab-${tabName}`).classList.remove("hidden");
+
+            document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+                btn.className = "admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 inline-flex items-center gap-2";
+            });
+            document.getElementById(`tab-btn-${tabName}`).className = "admin-tab-btn whitespace-nowrap px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 text-white shadow-xs inline-flex items-center gap-2";
+        }
+
+        function refreshAdminUI() {
+            document.getElementById("stat-courses").textContent = courses.length;
+            document.getElementById("stat-pending").textContent = enrollments.filter(e => e.status === "pending").length;
+            document.getElementById("stat-approved").textContent = enrollments.filter(e => e.status === "approved").length;
+
+            populateCourseDropdowns();
+            renderEnrollmentsList();
+            renderAdminCoursesList();
+
+            const urlField = document.getElementById("settings-script-url");
+            if (urlField) urlField.value = SCRIPT_URL;
+        }
+
+        function populateCourseDropdowns() {
+            const select = document.getElementById("direct-grant-course");
+            if (!select) return;
+            select.innerHTML = courses.map(c => `<option value="${c.id}">${c.title} (₹${c.price})</option>`).join("");
+        }
+
+        // ==================== ADMIN TAB 1: STUDENT PERMISSIONS ====================
+        function renderEnrollmentsList() {
+            const tbody = document.getElementById("admin-enrollments-tbody");
+            const filterVal = document.getElementById("filter-enrollment-status")?.value || "all";
+
+            const filtered = enrollments.filter(e => filterVal === "all" || e.status === filterVal);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-xs sm:text-sm text-slate-400">Koi student enrollment record nahi mila.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(item => {
+                const isApproved = item.status === "approved";
+                const isRevoked = item.status === "revoked";
+
+                let badgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800"><i class="fa-solid fa-clock"></i> Pending</span>`;
+                if (isApproved) {
+                    badgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-circle-check"></i> Approved</span>`;
+                } else if (isRevoked) {
+                    badgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800"><i class="fa-solid fa-ban"></i> Revoked</span>`;
+                }
+
+                return `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4">
+                            <p class="font-bold text-slate-900 text-xs sm:text-sm">${item.name}</p>
+                            <p class="text-xs text-indigo-600 font-semibold">${item.email}</p>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <p class="text-xs font-bold text-slate-700">${item.mobile}</p>
+                            <p class="text-[11px] text-slate-500 max-w-[180px] truncate" title="${item.address}">${item.address}</p>
+                        </td>
+                        <td class="py-3.5 px-4 text-xs text-slate-600 whitespace-nowrap">
+                            ${item.age} yrs / ${item.gender}
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <p class="text-xs font-bold text-slate-800 max-w-[190px] truncate" title="${item.courseTitle}">${item.courseTitle}</p>
+                        </td>
+                        <td class="py-3.5 px-4 whitespace-nowrap">
+                            ${badgeHtml}
+                        </td>
+                        <td class="py-3.5 px-4 text-right whitespace-nowrap space-x-1.5">
+                            ${!isApproved
+                                ? `<button onclick="changeEnrollmentStatus('${item.email}', '${item.courseId}', 'approved')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all">Approve & Unlock</button>`
+                                : `<button onclick="changeEnrollmentStatus('${item.email}', '${item.courseId}', 'revoked')" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-bold transition-all">Revoke</button>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        async function changeEnrollmentStatus(email, courseId, newStatus) {
+            // Update local state immediately
+            enrollments.forEach(item => {
+                if (item.email === email && String(item.courseId) === String(courseId)) {
+                    item.status = newStatus;
+                }
+            });
+            localStorage.setItem("skillacademy_enrollments", JSON.stringify(enrollments));
+            refreshAdminUI();
+
+            // Sync with Google Sheet
+            await postActionToSheet({
+                action: "updateStatus",
+                email: email,
+                courseId: courseId,
+                status: newStatus
+            });
+
+            if (newStatus === "approved") {
+                showToast(`Approved! ${email} ke liye video course unlock ho gaya hai.`, "success");
+            } else {
+                showToast(`Access revoked for ${email}.`, "warning");
+            }
+        }
+
+        async function handleDirectGrant(e) {
+            e.preventDefault();
+            const btn = document.getElementById("direct-grant-btn");
+            const email = document.getElementById("direct-grant-email").value.trim().toLowerCase();
+            const courseId = document.getElementById("direct-grant-course").value;
+            const course = courses.find(c => String(c.id) === String(courseId));
+            if (!course) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Granting...`;
+
+            // Update local state
+            enrollments.unshift({
+                timestamp: new Date().toISOString(),
+                courseId: course.id,
+                courseTitle: course.title,
+                name: "Direct Admin Access",
+                mobile: "-",
+                address: "-",
+                email: email,
+                age: "-",
+                gender: "-",
+                status: "approved"
+            });
+            localStorage.setItem("skillacademy_enrollments", JSON.stringify(enrollments));
+            refreshAdminUI();
+
+            await postActionToSheet({
+                action: "grantDirect",
+                email: email,
+                courseId: course.id,
+                courseTitle: course.title
+            });
+
+            document.getElementById("direct-grant-email").value = "";
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Grant Permission`;
+            showToast(`${email} ko "${course.title}" ka access mil gaya!`, "success");
+        }
+
+        // ==================== ADMIN TAB 2: NO-CODE COURSE CRUD ====================
+        function renderAdminCoursesList() {
+            const grid = document.getElementById("admin-courses-grid");
+            grid.innerHTML = courses.map(course => {
+                const fallbackThumb = `https://placehold.co/640x360/1e1b4b/e0e7ff?text=${encodeURIComponent(course.title)}`;
+                const thumbSrc = course.thumbnail && course.thumbnail.trim() !== "" ? course.thumbnail : fallbackThumb;
+
+                return `
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col">
+                        <div class="relative h-40 bg-slate-100">
+                            <img src="${thumbSrc}" onerror="this.onerror=null;this.src='${fallbackThumb}';" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-slate-900/85 text-white text-xs font-extrabold">
+                                ₹${course.price}
+                            </span>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col justify-between">
+                            <div>
+                                <h4 class="font-extrabold text-slate-900 text-base line-clamp-1">${course.title}</h4>
+                                <p class="text-xs text-slate-500 mt-1.5 line-clamp-2">${course.description}</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+                                <button onclick="openCourseFormModal('${course.id}')" class="px-3.5 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold inline-flex items-center gap-1.5">
+                                    <i class="fa-solid fa-pen"></i> Edit
+                                </button>
+                                <button onclick="handleDeleteCourse('${course.id}')" class="px-3.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold inline-flex items-center gap-1.5">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function openCourseFormModal(courseId = "") {
+            if (courseId) {
+                const course = courses.find(c => String(c.id) === String(courseId));
+                if (!course) return;
+                document.getElementById("course-form-modal-title").textContent = "Edit Video Course";
+                document.getElementById("course-form-id").value = course.id;
+                document.getElementById("course-form-title").value = course.title;
+                document.getElementById("course-form-price").value = course.price;
+                document.getElementById("course-form-desc").value = course.description;
+                document.getElementById("course-form-video").value = course.videoUrl;
+                document.getElementById("course-form-thumb").value = course.thumbnail || "";
+            } else {
+                document.getElementById("course-form-modal-title").textContent = "Add New Video Course";
+                document.getElementById("course-form-id").value = "";
+                document.getElementById("course-form-title").value = "";
+                document.getElementById("course-form-price").value = "";
+                document.getElementById("course-form-desc").value = "";
+                document.getElementById("course-form-video").value = "";
+                document.getElementById("course-form-thumb").value = "";
+            }
+            openModal("modal-course-form");
+        }
+
+        async function handleSaveCourse(e) {
+            e.preventDefault();
+            const btn = document.getElementById("course-form-save-btn");
+            btn.disabled = true;
+            btn.textContent = "Saving...";
+
+            const existingId = document.getElementById("course-form-id").value;
+            const title = document.getElementById("course-form-title").value.trim();
+            const price = Number(document.getElementById("course-form-price").value);
+            const description = document.getElementById("course-form-desc").value.trim();
+            const videoUrl = document.getElementById("course-form-video").value.trim();
+            const rawThumb = document.getElementById("course-form-thumb").value.trim();
+            const thumbnail = rawThumb || `https://placehold.co/640x360/1e1b4b/e0e7ff?text=${encodeURIComponent(title)}`;
+
+            const courseObj = {
+                id: existingId || ("CRS-" + Math.floor(1000 + Math.random() * 9000)),
+                title,
+                price,
+                description,
+                videoUrl,
+                thumbnail
+            };
+
+            // If fallback samples were active and admin adds their first real course, replace fallback list or update
+            if (isUsingFallbackSamples && !existingId) {
+                courses = [courseObj];
+                isUsingFallbackSamples = false;
+            } else if (existingId) {
+                const idx = courses.findIndex(c => String(c.id) === String(existingId));
+                if (idx !== -1) courses[idx] = courseObj;
+            } else {
+                courses.unshift(courseObj);
+            }
+
+            localStorage.setItem("skillacademy_courses", JSON.stringify(courses));
+            refreshAdminUI();
+            renderCourseGrid();
+
+            await postActionToSheet({
+                action: "saveCourse",
+                course: courseObj
+            });
+
+            btn.disabled = false;
+            btn.textContent = "Save Course";
+            closeModal("modal-course-form");
+            showToast("Course Google Sheet mein save ho gaya!", "success");
+        }
+
+        async function handleDeleteCourse(courseId) {
+            courses = courses.filter(c => String(c.id) !== String(courseId));
+            localStorage.setItem("skillacademy_courses", JSON.stringify(courses));
+            refreshAdminUI();
+            renderCourseGrid();
+
+            await postActionToSheet({
+                action: "deleteCourse",
+                courseId: courseId
+            });
+
+            showToast("Course delete kar diya gaya.", "info");
+        }
+
+        async function pushSampleCoursesToCloud() {
+            const btn = document.getElementById("push-samples-btn");
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving Samples...`;
+
+            for (const sample of SAMPLE_COURSES) {
+                await postActionToSheet({ action: "saveCourse", course: sample });
+            }
+
+            isUsingFallbackSamples = false;
+            courses = [...SAMPLE_COURSES];
+            localStorage.setItem("skillacademy_courses", JSON.stringify(courses));
+            refreshAdminUI();
+            renderCourseGrid();
+
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Add 3 Sample Courses`;
+            showToast("3 Sample Courses Google Sheet mein save ho gaye!", "success");
+        }
+
+        // ==================== ADMIN TAB 3: SETTINGS & PIN CHANGE ====================
+        async function updateScriptUrl() {
+            const newUrl = document.getElementById("settings-script-url").value.trim();
+            if (!newUrl) {
+                showToast("Valid Web App URL enter karein.", "warning");
+                return;
+            }
+            SCRIPT_URL = newUrl;
+            localStorage.setItem("skillacademy_script_url", SCRIPT_URL);
+            await syncFromGoogleSheet(true);
+        }
+
+        async function resetToDefaultScriptUrl() {
+            SCRIPT_URL = DEFAULT_SCRIPT_URL;
+            localStorage.removeItem("skillacademy_script_url");
+            document.getElementById("settings-script-url").value = SCRIPT_URL;
+            await syncFromGoogleSheet(true);
+        }
+
+        async function handleChangeAdminPin(e) {
+            e.preventDefault();
+            const btn = document.getElementById("update-pin-btn");
+            const newPin = document.getElementById("new-admin-pin-input").value.trim();
+            if (!newPin) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Updating...`;
+
+            adminPin = newPin;
+            localStorage.setItem("skillacademy_pin", adminPin);
+
+            await postActionToSheet({
+                action: "changePin",
+                newPin: newPin
+            });
+
+            document.getElementById("new-admin-pin-input").value = "";
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Update PIN in Cloud`;
+            showToast(`Admin PIN "${newPin}" Google Sheet mein update ho gaya!`, "success");
+        }
+    </script>
+</body>
+</html>
